@@ -25,9 +25,6 @@ def webServer(port=13331):
     
     try:
       message = connectionSocket.recv(1024).decode() #A client is sending you a message
-      if not message:
-        continue
-      print(message)
       #Fill in end 
       filename = message.split()[1]
       
@@ -84,5 +81,6 @@ def webServer(port=13331):
 
 if __name__ == "__main__":
   webServer(13331)
+
 
 

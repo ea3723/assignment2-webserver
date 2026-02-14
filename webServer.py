@@ -1,18 +1,23 @@
-# import socket module
+#Overview
+#This code implements a simple web server that listens for incoming HTTP requests on a specified port (default is 13331). When a request is received, it attempts to serve a file requested by the client. If the file is found, it sends the file's content along with a success HTTP header. If the file is not found, it sends a 404 error message.
+
+
+
+# import socket module, which allows the server to communicate over the network.
 from socket import *
-# In order to terminate the program
+# In order to terminate the program, if needed
 import sys
 
 
 
-def webServer(port=13331):
-  serverSocket = socket(AF_INET, SOCK_STREAM)
+def webServer(port=13331): # web server listens for incoming HTTP requests on specified port = 13331
+  serverSocket = socket(AF_INET, SOCK_STREAM) #socket object is created using AF_INET = IPV4 and SOCK_STREAM = TCP. This socket will be used to establish TCP connections.
   
-  #Prepare a server socket
+  #Prepare a server socket that will accept connections from any IP address
   serverSocket.bind(("", port))
   
   #Fill in start
-  serverSocket.listen(1) #Listen for incoming connections
+  serverSocket.listen(1) #The web server Listens for incoming connections
 
   #Fill in end
 
@@ -20,13 +25,13 @@ def webServer(port=13331):
     #Establish the connection
     
     print('Ready to serve...')
-    connectionSocket, addr = serverSocket.accept() #Accept connections
+    connectionSocket, addr = serverSocket.accept() #Accept connections from the client
     #Fill in end
     
     try:
-      message = connectionSocket.recv(1024).decode() #A client is sending you a message
+      message = connectionSocket.recv(1024).decode() #A client is sending you a message (HTTP request)
       #Fill in end 
-      filename = message.split()[1]
+      filename = message.split()[1] #The server extracts the filename from the HTTP request.  The request is split into parts, and the second part (index 1) is the filename.
       
       #opens the client requested file. 
       #Plenty of guidance online on how to open and read a file in python. How should you read it though if you plan on sending it through a socket?
@@ -52,14 +57,14 @@ def webServer(port=13331):
       #Send everything as one send command, do not send one line/item at a time!
 
       # Fill in start
-      connectionSocket.sendall(response) #Send the complete response
+      connectionSocket.sendall(response) #Send the complete response (header + file content) to the client, which ensures all data is sent in one go.
 
       # Fill in end
         
       connectionSocket.close() #closing the connection socket
       
     except Exception as e:
-      # Send response message for invalid request due to the file not being found (404)
+      # Send response error message for invalid request due to the file not being found (404)
       # Remember the format you used in the try: block!
       #Fill in start
       header = b"HTTP/1.1 404 Not Found\r\n"  # Response header for a not found request
@@ -71,7 +76,7 @@ def webServer(port=13331):
 
       #Close client socket
       #Fill in start
-      connectionSocket.close()
+      connectionSocket.close() #to free up resources
       #Fill in end
 
   # Commenting out the below (some use it for local testing). It is not required for Gradescope, and some students have moved it erroneously in the While loop. 
@@ -80,7 +85,8 @@ def webServer(port=13331):
   #sys.exit()  # Terminate the program after sending the corresponding data
 
 if __name__ == "__main__":
-  webServer(13331)
+  webServer(13331) #checks if the script is being run directly and stats the web server on port 13331.
+
 
 
 
